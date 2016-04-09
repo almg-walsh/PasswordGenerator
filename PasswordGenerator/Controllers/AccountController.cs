@@ -43,7 +43,6 @@
                     var usr = db.userAccount.Where(u => u.UserId == userId).FirstOrDefault();
                     var account = new UserAccount();
                     
-
                     if (usr == null)
                     {
                         account.UserId = userId;
