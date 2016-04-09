@@ -98,7 +98,7 @@
         public bool ValidatePassword(string userId, string password)
         {
             // We get the password from the Database and decrypt ready for comparison.
-            var decryptedString = StringCipher.Decrypt(password);
+            var decryptedString = Encryptor.Decrypt(password);
 
             // We extrapolate the time from the stored password.
             DateTime storedPassTime = DateTime.Parse(decryptedString.Substring(decryptedString.Length - 8));
@@ -152,7 +152,7 @@
 
             var password = userId + timeStamp.ToLongTimeString();
 
-            string encryptedString = StringCipher.Encrypt(password);
+            string encryptedString = Encryptor.Encrypt(password);
 
             return encryptedString;
         }

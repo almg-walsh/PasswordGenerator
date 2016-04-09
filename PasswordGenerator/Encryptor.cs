@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace PasswordGenerator
 {
-    public static class StringCipher
+    public static class Encryptor
     {
         public static string Encrypt(this string text)
         {
