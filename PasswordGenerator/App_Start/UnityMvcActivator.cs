@@ -1,12 +1,12 @@
-using System.Linq;
-using System.Web.Mvc;
-using Microsoft.Practices.Unity.Mvc;
-
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(PasswordGenerator.App_Start.UnityWebActivator), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethod(typeof(PasswordGenerator.App_Start.UnityWebActivator), "Shutdown")]
 
 namespace PasswordGenerator.App_Start
 {
+    using System.Linq;
+    using System.Web.Mvc;
+    using Microsoft.Practices.Unity.Mvc;
+
     /// <summary>Provides the bootstrapping for integrating Unity with ASP.NET MVC.</summary>
     public static class UnityWebActivator
     {

@@ -1,14 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PasswordGenerator.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-
-namespace PasswordGenerator.Controllers.Tests
+﻿namespace PasswordGenerator.Controllers.Tests
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Controllers;
+
     [TestClass]
     public class AccountControllerTests
     {

@@ -1,11 +1,10 @@
-﻿
-using PasswordGenerator.Controllers;
-using Microsoft.Practices.Unity;
-using Microsoft.Practices.Unity.Mvc;
-using System.Web.Mvc;
-
-namespace PasswordGenerator
+﻿namespace PasswordGenerator
 {
+    using PasswordGenerator.Controllers;
+    using Microsoft.Practices.Unity;
+    using Microsoft.Practices.Unity.Mvc;
+    using System.Web.Mvc;
+
     public class Bootstrapper
     {
         public static IUnityContainer Initialise()

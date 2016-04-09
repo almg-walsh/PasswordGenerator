@@ -1,11 +1,8 @@
-﻿using System;
-using System.Text;
-using System.Security.Cryptography;
-using System.IO;
-using System.Linq;
-
-namespace PasswordGenerator
+﻿namespace PasswordGenerator
 {
+    using System;
+    using System.Text;
+
     public static class Encryptor
     {
         public static string Encrypt(this string text)
