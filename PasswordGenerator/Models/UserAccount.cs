@@ -36,6 +36,6 @@
         /// <value>
         ///   <c>true</c> if used; otherwise, <c>false</c>.
         /// </value>
-        public bool Used { get; set; }
+        public bool ValidPassword { get; set; }
     }
 }

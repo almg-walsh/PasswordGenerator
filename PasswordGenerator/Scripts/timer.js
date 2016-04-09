@@ -1,4 +1,4 @@
-﻿var downloadButton = document.getElementById("download");
+﻿var downloadButton = document.getElementById("validate");
 var counter = 30;
 var newElement = document.createElement("p");
 newElement.innerHTML = "Your password will only be available for 30 seconds.";

@@ -1,0 +1,29 @@
+﻿@model PasswordGenerator.Models.UserAccount
+
+@{
+    ViewBag.Title = "Register";
+}
+
+@section Scripts {
+
+    @Scripts.Render("~/bundles/jqueryval")
+}
+    <div>
+    @using (Html.BeginForm())
+    {
+        if (!Model.ValidPassword)
+        {
+            <div class="form-group">
+                <div class="col-md-10 text-danger">Your password has expired, please click @Html.ActionLink("here", "Edit","Account", new { userId = Model.UserId }, null) to generate a new one.</div>
+            </div>
+        }
+        else
+        {
+            <div class="form-group">
+                <div class="col-md-10 text-danger">Your password is still valid.</div>
+                <br />
+                <div class="col-md-10 text-danger">Press<a href="javascript:void(0);" onclick="history.go(-1);"> here</a> to go back to the previous page.</div>
+            </div>
+        }
+    }
+    </div>

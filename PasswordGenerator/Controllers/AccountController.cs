@@ -42,7 +42,7 @@
                 {
                     var usr = db.userAccount.Where(u => u.UserId == userId).FirstOrDefault();
                     var account = new UserAccount();
-                    account = usr;
+                    
 
                     if (usr == null)
                     {
@@ -52,29 +52,55 @@
                         db.userAccount.Add(account);
                         db.SaveChanges();
                         ViewBag.Message = userId + " successfully registered. Please be aware that it will only be valid for 30 seconds.";
-
+                        
                         return View(account);
                     }
                     else
                     {
-                        // We get the password from the Database and decrypt ready for comparison.
-                        var decryptedString = StringCipher.Decrypt(usr.Password);
-
-                        // We extrapolate the time from the stored password.
-                        DateTime storedPassTime = DateTime.Parse(decryptedString.Substring(decryptedString.Length - 8));
-
-                        // We extrapolate the difference between current time and stored time to check if more than 30 seconds have passed.
-                        var difference = DateTime.Now - storedPassTime;
-
-                        if (difference.TotalSeconds > 30)
-                        {
-                            ViewBag.Message = "Your password is no longer valid";
-                            return View(account);
-                        }
+                        account = usr;
+                        ViewBag.Message = "Existing User";
+                        return View(account);
                     }
                 }
             }
             return View();
+        }
+
+        /// <summary>
+        /// Validates the specified user identifier.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="password">The password.</param>
+        /// <returns></returns>
+        public ActionResult Validate(string userId, string password)
+        {
+            using (UserDbContext db = new UserDbContext())
+            {
+                var usr = db.userAccount.Where(u => u.UserId == userId).FirstOrDefault();
+                var account = new UserAccount();
+                account = usr;
+
+                // We get the password from the Database and decrypt ready for comparison.
+                var decryptedString = StringCipher.Decrypt(password);
+
+                // We extrapolate the time from the stored password.
+                DateTime storedPassTime = DateTime.Parse(decryptedString.Substring(decryptedString.Length - 8));
+
+                // We extrapolate the difference between current time and stored time to check if more than 30 seconds have passed.
+                var difference = DateTime.Now - storedPassTime;
+
+                if (difference.TotalSeconds > 30)
+                {
+                    account.ValidPassword = false;
+                    return View(account);
+                }
+                else
+                {
+                    account.ValidPassword = true;
+                    ViewBag.Message = "valid";
+                    return View(account);
+                }
+            }
         }
 
         /// <summary>
