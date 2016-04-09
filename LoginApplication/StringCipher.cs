@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.IO;
 using System.Linq;
 
-namespace LoginApplication
+namespace PasswordGenerator
 {
     public static class StringCipher
     {

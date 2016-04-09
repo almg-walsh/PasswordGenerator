@@ -1,10 +1,10 @@
 ﻿
-using LoginApplication.Controllers;
+using PasswordGenerator.Controllers;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Mvc;
 using System.Web.Mvc;
 
-namespace LoginApplication
+namespace PasswordGenerator
 {
     public class Bootstrapper
     {

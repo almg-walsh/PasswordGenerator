@@ -1,9 +1,9 @@
-﻿namespace LoginApplication.Controllers
+﻿namespace PasswordGenerator.Controllers
 {
     using System;
     using System.Linq;
     using System.Web.Mvc;
-    using LoginApplication.Models;
+    using PasswordGenerator.Models;
 
     public class AccountController : Controller
     {

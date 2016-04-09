@@ -2,7 +2,7 @@ using System;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
 
-namespace LoginApplication.App_Start
+namespace PasswordGenerator.App_Start
 {
     /// <summary>
     /// Specifies the Unity configuration for the main container.

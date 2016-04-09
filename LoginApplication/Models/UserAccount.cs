@@ -1,4 +1,4 @@
-﻿namespace LoginApplication.Models
+﻿namespace PasswordGenerator.Models
 {
     using System;
     using System.ComponentModel.DataAnnotations;
