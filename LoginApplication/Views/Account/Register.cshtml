@@ -4,6 +4,13 @@
     ViewBag.Title = "Register";
 }
 
+@section Scripts {
+
+    <script type="text/javascript" src="~/Scripts/timer.js"></script>
+
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
 <h2>Register</h2>
 
 
@@ -18,9 +25,11 @@
         @if (ViewBag.Message != null)
         {
             <div class="form-group">
-                <div class="col-md-10">@ViewBag.Message</div>
+                @if (Model != null)
+                { <p>Here is your password: <b>@Model.Password</b></p> }
+                <p id="download">Your password has expired. Please click @Html.ActionLink("here", "Edit", "Account", new { userId = Model.UserId }, null) to generate a new one.</p>
                 <br />
-                <div class="col-md-10">Please click @Html.ActionLink("here", "Login", "Account") to login.</div>
+                @*<div class="col-md-10">Please click @Html.ActionLink("here", "Login", "Account") to login.</div>*@
                 </div>
         }
         <div class="form-group">
@@ -33,16 +42,9 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Register" class="btn btn-default" />
+                <input type="submit" value="Generate new Password" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}

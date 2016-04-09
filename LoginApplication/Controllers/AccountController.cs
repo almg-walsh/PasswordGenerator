@@ -11,9 +11,21 @@
         /// Registers this instance.
         /// </summary>
         /// <returns></returns>
-        public ActionResult Register()
+        public ActionResult Register(UserAccount userAccount)
         {
+            if (userAccount != null)
+            {
+                using (UserDbContext db = new UserDbContext())
+                {
+                    var usr = db.userAccount.Where(u => u.UserId == userAccount.UserId).FirstOrDefault();
+                    var account = new UserAccount();
+                    account = usr;
+                    return View(userAccount);
+                }
+            }
+
             return View();
+            
         }
 
         /// <summary>
@@ -22,92 +34,47 @@
         /// <param name="account">The account.</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Register(UserAccount account)
+        public ActionResult Register(string userId)
         {
             if(ModelState.IsValid)
             {
-                account.Password = this.GeneratePassword(account.UserId);
-                account.Date = DateTime.Now;
-
                 using (UserDbContext db = new UserDbContext())
                 {
-                    db.userAccount.Add(account);
-                    db.SaveChanges();
+                    var usr = db.userAccount.Where(u => u.UserId == userId).FirstOrDefault();
+                    var account = new UserAccount();
+                    account = usr;
+
+                    if (usr == null)
+                    {
+                        account.UserId = userId;
+                        account.Password = this.GeneratePassword(userId);
+                        account.Date = DateTime.Now;
+                        db.userAccount.Add(account);
+                        db.SaveChanges();
+                        ViewBag.Message = userId + " successfully registered. Please be aware that it will only be valid for 30 seconds.";
+
+                        return View(account);
+                    }
+                    else
+                    {
+                        // We get the password from the Database and decrypt ready for comparison.
+                        var decryptedString = StringCipher.Decrypt(usr.Password);
+
+                        // We extrapolate the time from the stored password.
+                        DateTime storedPassTime = DateTime.Parse(decryptedString.Substring(decryptedString.Length - 8));
+
+                        // We extrapolate the difference between current time and stored time to check if more than 30 seconds have passed.
+                        var difference = DateTime.Now - storedPassTime;
+
+                        if (difference.TotalSeconds > 30)
+                        {
+                            ViewBag.Message = "Your password is no longer valid";
+                            return View(account);
+                        }
+                    }
                 }
-                ModelState.Clear();
-                ViewBag.Message = account.UserId + " successfully registered  Use this "+ account.Password +" to login. Please be aware that it will only be valid for 30 seconds.";
             }
             return View();
-        }
-
-        //login
-        /// <summary>
-        /// Logins this instance.
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Login()
-        {
-            return View();
-        }
-
-        /// <summary>
-        /// Logins the specified user account.
-        /// </summary>
-        /// <param name="userAccount">The user account.</param>
-        /// <returns></returns>
-        [HttpPost]
-        public ActionResult Login(UserAccount userAccount)
-        {
-            using (UserDbContext db = new UserDbContext())
-            {
-                var usr = db.userAccount.Where(u => u.UserId == userAccount.UserId && u.Password == userAccount.Password).FirstOrDefault();
-               
-                // We get the password from the Database and decrypt ready for comparison.
-                var decryptedString = StringCipher.Decrypt(usr.Password);
-
-                // We extrapolate the time from the stored password.
-                DateTime storedPassTime = DateTime.Parse(decryptedString.Substring(decryptedString.Length - 8));
-
-                // We extrapolate the difference between current time and stored time to check if more than 30 seconds have passed.
-                var difference = DateTime.Now - storedPassTime;
-
-                if (usr.Used)
-                {
-                    Session["UserId"] = userAccount.UserId.ToString();
-                    return View("LoggedIn", userAccount);
-                }
-
-                else if (difference.TotalSeconds > 30)
-                {
-                    ViewBag.Message = "Your password is no longer valid";
-                }
-                else if (userAccount != null)
-                {
-                    usr.Used = true;
-                    db.SaveChanges();
-
-                    Session["UserId"] = userAccount.UserId.ToString();
-                    return View("LoggedIn", userAccount);
-                }
-            }
-
-            return View(userAccount);
-        }
-
-        /// <summary>
-        /// Loggeds the in.
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult LoggedIn()
-        {
-            if (Session["UserId"] != null)
-            {
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("Login");
-            }
         }
 
         /// <summary>
@@ -115,16 +82,18 @@
         /// </summary>
         /// <param name="user">The user.</param>
         /// <returns></returns>
-        public ActionResult Edit(UserAccount user)
+        public ActionResult Edit(string userId)
         {
+            var account = new UserAccount();
             using (UserDbContext db = new UserDbContext())
             {
-                user.Password = GeneratePassword(user.UserId);
-                db.userAccount.Attach(user);
-                db.Entry(user).Property(u => u.Password).IsModified = true;
+                var usr = db.userAccount.Where(u => u.UserId == userId).FirstOrDefault();
+                usr.Password = GeneratePassword(userId);
                 db.SaveChanges();
+                account = usr;
             }
-            return View(user);
+            ViewBag.Message = "Success.";
+            return View("Register", account);
         }
 
         /// <summary>
