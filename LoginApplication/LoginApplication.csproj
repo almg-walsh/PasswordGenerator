@@ -212,7 +212,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="LoginApplicationTests.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\UserDbContext.cs" />
     <Compile Include="Models\UserAccount.cs" />

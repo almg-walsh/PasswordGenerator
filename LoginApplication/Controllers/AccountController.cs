@@ -79,7 +79,7 @@
 
                 else if (difference.TotalSeconds > 30)
                 {
-                    ViewBag.Message = "Password is no longer valid.";
+                    ViewBag.Message = "Your password is no longer valid";
                 }
                 else if (userAccount != null)
                 {
