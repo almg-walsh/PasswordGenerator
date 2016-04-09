@@ -14,14 +14,35 @@ namespace PasswordGenerator.Controllers.Tests
     {
         private static string userId = "Aidan";
 
+        AccountController controller = new AccountController();
+
         [TestMethod]
         public void GeneratePasswordTest()
         {
-            AccountController controller = new AccountController();
+            string password = controller.GeneratePassword(userId);
+            Assert.IsNotNull(password);
+        }
 
+        [TestMethod]
+        public void ValidatePassword()
+        {
             string password = controller.GeneratePassword(userId);
 
-            Assert.IsNotNull(password);
+            bool valid = controller.ValidatePassword(userId, password);
+
+            Assert.IsTrue(valid);
+        }
+
+        [TestMethod]
+        public void ValidatePasswordWithWrongId()
+        {
+            string password = controller.GeneratePassword(userId);
+
+            var newUserId = "Bob";
+
+            bool valid = controller.ValidatePassword(newUserId, password);
+
+            Assert.IsFalse(valid);
         }
     }
 }

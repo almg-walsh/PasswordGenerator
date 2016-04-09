@@ -80,27 +80,46 @@
                 var account = new UserAccount();
                 account = usr;
 
-                // We get the password from the Database and decrypt ready for comparison.
-                var decryptedString = StringCipher.Decrypt(password);
+                var valid = ValidatePassword(userId, password);
 
-                // We extrapolate the time from the stored password.
-                DateTime storedPassTime = DateTime.Parse(decryptedString.Substring(decryptedString.Length - 8));
-
-                // We extrapolate the difference between current time and stored time to check if more than 30 seconds have passed.
-                var difference = DateTime.Now - storedPassTime;
-
-                if (difference.TotalSeconds > 30)
+                if (valid)
                 {
-                    account.ValidPassword = false;
+                    account.ValidPassword = valid;
                     return View(account);
                 }
                 else
                 {
-                    account.ValidPassword = true;
-                    ViewBag.Message = "valid";
                     return View(account);
                 }
+
             }
+        }
+
+        public bool ValidatePassword(string userId, string password)
+        {
+            // We get the password from the Database and decrypt ready for comparison.
+            var decryptedString = StringCipher.Decrypt(password);
+
+            // We extrapolate the time from the stored password.
+            DateTime storedPassTime = DateTime.Parse(decryptedString.Substring(decryptedString.Length - 8));
+
+            bool validPassword = decryptedString.Contains(userId);
+
+            // We extrapolate the difference between current time and stored time to check if more than 30 seconds have passed.
+            var difference = DateTime.Now - storedPassTime;
+            if (validPassword)
+            {
+                if (difference.TotalSeconds > 30)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+                return false;
         }
 
         /// <summary>
