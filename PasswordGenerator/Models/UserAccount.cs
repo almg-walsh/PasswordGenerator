@@ -3,6 +3,9 @@
     using System;
     using System.ComponentModel.DataAnnotations;
 
+    /// <summary>
+    /// The UserAccount model.
+    /// </summary>
     public class UserAccount
     {
         /// <summary>

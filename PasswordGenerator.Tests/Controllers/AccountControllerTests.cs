@@ -1,40 +1,59 @@
 ﻿namespace PasswordGenerator.Controllers.Tests
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Controllers;
 
+    using PasswordGenerator.Controllers;
+
+    /// <summary>
+    /// The account controller tests.
+    /// </summary>
     [TestClass]
     public class AccountControllerTests
     {
-        private static string userId = "Aidan";
+        /// <summary>
+        /// The user identifier
+        /// </summary>
+        public const string UserId = "Aidan";
 
-        AccountController controller = new AccountController();
+        /// <summary>
+        /// The controller
+        /// </summary>
+        public readonly AccountController Controller = new AccountController();
 
+        /// <summary>
+        /// Generates the password test.
+        /// </summary>
         [TestMethod]
         public void GeneratePasswordTest()
         {
-            string password = controller.GeneratePassword(userId);
+            string password = this.Controller.GeneratePassword(UserId);
             Assert.IsNotNull(password);
         }
 
+        /// <summary>
+        /// Validates the password.
+        /// </summary>
         [TestMethod]
         public void ValidatePassword()
         {
-            string password = controller.GeneratePassword(userId);
+            string password = this.Controller.GeneratePassword(UserId);
 
-            bool valid = controller.ValidatePassword(userId, password);
+            bool valid = this.Controller.ValidatePassword(UserId, password);
 
             Assert.IsTrue(valid);
         }
 
+        /// <summary>
+        /// Validates the password with wrong identifier.
+        /// </summary>
         [TestMethod]
         public void ValidatePasswordWithWrongId()
         {
-            string password = controller.GeneratePassword(userId);
+            string password = this.Controller.GeneratePassword(UserId);
 
-            var newUserId = "Bob";
+            const string NewUserId = "Bob";
 
-            bool valid = controller.ValidatePassword(newUserId, password);
+            bool valid = this.Controller.ValidatePassword(NewUserId, password);
 
             Assert.IsFalse(valid);
         }

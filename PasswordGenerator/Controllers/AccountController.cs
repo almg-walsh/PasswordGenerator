@@ -3,44 +3,56 @@
     using System;
     using System.Linq;
     using System.Web.Mvc;
+
+    using PasswordGenerator.Migrations;
     using PasswordGenerator.Models;
 
+    /// <summary>
+    /// The account controller.
+    /// </summary>
     public class AccountController : Controller
     {
         /// <summary>
         /// Registers this instance.
         /// </summary>
-        /// <returns></returns>
+        /// <param name="userAccount">
+        /// The user Account.
+        /// </param>
+        /// <returns>
+        /// Return the Register view.
+        /// </returns>
         public ActionResult Register(UserAccount userAccount)
         {
             if (userAccount != null)
             {
-                using (UserDbContext db = new UserDbContext())
+                using (var db = new UserDbContext())
                 {
-                    var usr = db.userAccount.Where(u => u.UserId == userAccount.UserId).FirstOrDefault();
-                    var account = new UserAccount();
-                    account = usr;
-                    return View(userAccount);
+                    var usr = db.UserAccount.FirstOrDefault(u => u.UserId == userAccount.UserId);
+                    userAccount = usr;
+                    return this.View(userAccount);
                 }
             }
 
-            return View();
-            
+            return this.View();
         }
 
         /// <summary>
         /// Registers the specified account.
         /// </summary>
-        /// <param name="account">The account.</param>
-        /// <returns></returns>
+        /// <param name="userId">
+        /// The user Id.
+        /// </param>
+        /// <returns>
+        /// The register view.
+        /// </returns>
         [HttpPost]
         public ActionResult Register(string userId)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                using (UserDbContext db = new UserDbContext())
+                using (var db = new UserDbContext())
                 {
-                    var usr = db.userAccount.Where(u => u.UserId == userId).FirstOrDefault();
+                    var usr = db.UserAccount.FirstOrDefault(u => u.UserId == userId);
                     var account = new UserAccount();
                     
                     if (usr == null)
@@ -48,21 +60,20 @@
                         account.UserId = userId;
                         account.Password = this.GeneratePassword(userId);
                         account.Date = DateTime.Now;
-                        db.userAccount.Add(account);
+                        db.UserAccount.Add(account);
                         db.SaveChanges();
                         ViewBag.Message = userId + " successfully registered. Please be aware that it will only be valid for 30 seconds.";
                         
-                        return View(account);
+                        return this.View(account);
                     }
-                    else
-                    {
-                        account = usr;
-                        ViewBag.Message = "Existing User";
-                        return View(account);
-                    }
+
+                    account = usr;
+                    this.ViewBag.Message = "Existing User";
+                    return this.View(account);
                 }
             }
-            return View();
+
+            return this.View();
         }
 
         /// <summary>
@@ -70,37 +81,48 @@
         /// </summary>
         /// <param name="userId">The user identifier.</param>
         /// <param name="password">The password.</param>
-        /// <returns></returns>
+        /// <returns>The view.</returns>
         public ActionResult Validate(string userId, string password)
         {
-            using (UserDbContext db = new UserDbContext())
+            using (var db = new UserDbContext())
             {
-                var usr = db.userAccount.Where(u => u.UserId == userId).FirstOrDefault();
-                var account = new UserAccount();
-                account = usr;
+                var usr = db.UserAccount.FirstOrDefault(u => u.UserId == userId);
+                var account = usr;
 
-                var valid = ValidatePassword(userId, password);
+                var valid = this.ValidatePassword(userId, password);
 
                 if (valid)
                 {
-                    account.ValidPassword = valid;
-                    return View(account);
-                }
-                else
-                {
-                    return View(account);
+                    if (account != null)
+                    {
+                        account.ValidPassword = true;
+                        return this.View(account);
+                    }
                 }
 
+                return this.View(account);
             }
         }
 
+        /// <summary>
+        /// The validate password.
+        /// </summary>
+        /// <param name="userId">
+        /// The user id.
+        /// </param>
+        /// <param name="password">
+        /// The password.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
         public bool ValidatePassword(string userId, string password)
         {
             // We get the password from the Database and decrypt ready for comparison.
             var decryptedString = Encryptor.Decrypt(password);
 
             // We extrapolate the time from the stored password.
-            DateTime storedPassTime = DateTime.Parse(decryptedString.Substring(decryptedString.Length - 8));
+            var storedPassTime = DateTime.Parse(decryptedString.Substring(decryptedString.Length - 8));
 
             bool validPassword = decryptedString.Contains(userId);
 
@@ -108,50 +130,48 @@
             var difference = DateTime.Now - storedPassTime;
             if (validPassword)
             {
-                if (difference.TotalSeconds > 30)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
+                return !(difference.TotalSeconds > 30);
             }
-            else
-                return false;
+
+            return false;
         }
 
         /// <summary>
         /// Edits the specified user.
         /// </summary>
-        /// <param name="user">The user.</param>
-        /// <returns></returns>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>the register view on success.</returns>
         public ActionResult Edit(string userId)
         {
-            var account = new UserAccount();
-            using (UserDbContext db = new UserDbContext())
+            UserAccount account;
+            using (var db = new UserDbContext())
             {
-                var usr = db.userAccount.Where(u => u.UserId == userId).FirstOrDefault();
-                usr.Password = GeneratePassword(userId);
+                var usr = db.UserAccount.FirstOrDefault(u => u.UserId == userId);
+                if (usr != null)
+                {
+                    usr.Password = this.GeneratePassword(userId);
+                }
+
                 db.SaveChanges();
                 account = usr;
             }
+
             ViewBag.Message = "Success.";
-            return View("Register", account);
+            return this.View("Register", account);
         }
 
         /// <summary>
         /// Generates the password.
         /// </summary>
         /// <param name="userId">The user identifier.</param>
-        /// <returns></returns>
+        /// <returns>The encrypted string.</returns>
         public string GeneratePassword(string userId)
         {
-            DateTime timeStamp = DateTime.Now;
+            var timeStamp = DateTime.Now;
 
             var password = userId + timeStamp.ToLongTimeString();
 
-            string encryptedString = Encryptor.Encrypt(password);
+            string encryptedString = password.Encrypt();
 
             return encryptedString;
         }

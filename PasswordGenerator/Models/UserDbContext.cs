@@ -14,6 +14,6 @@
         /// <value>
         /// The user account.
         /// </value>
-        public DbSet<UserAccount> userAccount { get; set; }
+        public DbSet<UserAccount> UserAccount { get; set; }
     }
 }
