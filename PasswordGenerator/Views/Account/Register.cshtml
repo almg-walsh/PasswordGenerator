@@ -5,29 +5,34 @@
 }
 
 @section Scripts {
+ 
 
+    <script src="https://cdn.rawgit.com/zenorocha/clipboard.js/v1.5.8/dist/clipboard.min.js"></script>
+
+    <script>
+        new Clipboard('.btn');
+    </script>
 
     @Scripts.Render("~/bundles/jqueryval")
 }
 
-<h2>Register</h2>
-
+<h2>Welcome</h2>
 
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>UserAccount</h4>
+        <h4>Generate a Password</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @if (ViewBag.Message != null)
         {
             <div class="form-group">
             @if (Model != null)
-            { <p>Here is your password: <b>@Model.Password</b></p> }
+            { <p>Here is your password: <b id="password">@Model.Password</b> <button class="btn" data-clipboard-target="#password">Copy to clipboard</button></p>}
                 <p>Your password will only be valid for 30 seconds.</p>
-                <p id="validate">Please click @Html.ActionLink("here", "Validate", "Account", new { userId = Model.UserId, password = Model.Password }, null) to check if your password is still valid</p>
+                <p id="validate">Please click @Html.ActionLink("here", "Validate", "Account", new { model = Model }, null) to check if your password is still valid</p>
             </div>
         }
         <div class="form-group">

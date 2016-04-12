@@ -5,7 +5,7 @@ namespace PasswordGenerator.Migrations
     /// <summary>
     /// The configuration.
     /// </summary>
-    internal sealed class Configuration : DbMigrationsConfiguration<Models.UserDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<Models.UserAccountDbContext>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Configuration" /> class.
@@ -20,7 +20,7 @@ namespace PasswordGenerator.Migrations
         /// Seeds the specified context.
         /// </summary>
         /// <param name="context">The context.</param>
-        protected override void Seed(Models.UserDbContext context)
+        protected override void Seed(Models.UserAccountDbContext context)
         {
             // This method will be called after migrating to the latest version.
 

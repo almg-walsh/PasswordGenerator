@@ -15,6 +15,7 @@
         /// The user identifier.
         /// </value>
         [Key]
+        [Required]
         public string UserId { get; set; }
 
         /// <summary>

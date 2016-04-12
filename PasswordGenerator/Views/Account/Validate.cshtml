@@ -7,23 +7,58 @@
 @section Scripts {
 
     @Scripts.Render("~/bundles/jqueryval")
+
 }
     <div>
     @using (Html.BeginForm())
     {
-        if (!Model.ValidPassword)
+        if (ViewBag.Message != null)
         {
-            <div class="form-group">
-                <div class="col-md-10 text-danger">Your password has expired, please click @Html.ActionLink("here", "Edit","Account", new { userId = Model.UserId }, null) to generate a new one.</div>
-            </div>
-        }
-        else
-        {
-            <div class="form-group">
-                <div class="col-md-10 text-danger">Your password is still valid.</div>
+            if (ViewBag.Message == "invalid")
+            {
+                <div class="form-group">
+                    <div class="col-md-10 text-danger">Your password is @ViewBag.Message please enter the correct password.</div>
+                </div>
                 <br />
-                <div class="col-md-10 text-danger">Press<a href="javascript:void(0);" onclick="history.go(-1);"> here</a> to go back to the previous page.</div>
-            </div>
+            }
+            else if (!Model.ValidPassword)
+            {
+                <div class="form-group">
+                    <div class="col-md-10 text-danger">@ViewBag.Message @Html.ActionLink("here", "Edit","Account", new { userId = Model.UserId }, null)</div>
+                </div>
+                <br />
+            }
+            else
+            {
+                <div class="form-group">
+                    <div class="col-md-10">@ViewBag.Message</div>
+                    <br />
+                    <div class="col-md-10">Press @Html.ActionLink("here", "Edit","Account", new { userId = Model.UserId }, null) to go back to the previous page.</div>
+                </div>
+                <br />
+            }
         }
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserId, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.UserId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Password, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Validate" class="btn btn-default" />
+            </div>
+        </div>
     }
     </div>
